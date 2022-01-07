@@ -1,4 +1,5 @@
 ﻿using System;
+using SudokuSolver.Entities;
 using System.IO;
 using System.Collections.Generic;
 
@@ -9,8 +10,32 @@ namespace SudokuSolver
         static void Main(string[] args)
         {
             string numbers = System.IO.File.ReadAllText(@"C:\Users\gucru\source\repos\SudokuSolver\Sudoku1\Sudoku1.txt");
-            string[,] board = new string[11, 11];
+            Grid grid = new Grid(numbers.ToString());
+            Console.WriteLine(grid.Pattern);
+            grid.fill();
             int count = 0;
+            for (int i = 0; i < 11; i++)
+            {
+                Console.WriteLine();
+                for (int k = 0; k < 11; k++)
+                {
+                    Console.Write(grid.Box[count].Position + " ");
+                    count++;
+                }
+            }
+            count = 0;
+            for (int i = 0; i < 11; i++)
+            {
+                Console.WriteLine();
+                for (int k = 0; k < 11; k++)
+                {
+                    Console.Write(grid.Box[count].Number + " ");
+                    count++;
+                }
+            }
+            /*
+            string[,] board = new string[11, 11];
+            count = 0;
             for (int i = 0; i < 11; i++)
             {
                 for (int k = 0; k < 11; k++)
@@ -38,6 +63,7 @@ namespace SudokuSolver
                     }
                 }
             }
+            
             while (true)
             {
                 try
@@ -96,7 +122,7 @@ namespace SudokuSolver
                     board[row, column] = Console.ReadLine();
                 }
                 catch { }
-            }
+            }*/
 
         }
     }
