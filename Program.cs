@@ -1,7 +1,7 @@
 ﻿using System;
-using SudokuSolver.Entities;
-using System.IO;
 using System.Collections.Generic;
+using SudokuSolver.Entities;
+
 
 namespace SudokuSolver
 {
@@ -9,13 +9,18 @@ namespace SudokuSolver
     {
         static void Main(string[] args)
         {
+            bool movement = true;
+            Player player = new Player();
             string[] games = System.IO.File.ReadAllLines(@"C:\Users\gucru\source\repos\SudokuSolver\Sudoku1\Sudoku1.txt");
             Random rnd1 = new Random();
             string numbers = games[rnd1.Next(games.Length)];
             Grid grid = new Grid(numbers.ToString());
             grid.Fill();
-            while (true)
+            while (grid.Verification() == true)
             {
+                string currentRow = "";
+                string currentColumn = "";
+                string currentBox = "";
                 Console.Clear();
                 int count = 0;
                 for (int i = 0; i < 11; i++)
@@ -23,37 +28,63 @@ namespace SudokuSolver
                     Console.WriteLine();
                     for (int k = 0; k < 11; k++)
                     {
-                        Console.Write(grid.Box[count].Number + " ");
-                        count++;
-                    }
-                }
-                Console.WriteLine();
-                Console.WriteLine(grid.Row());
-                Console.WriteLine(grid.Column());
-                Console.WriteLine(grid._Box());
-                Console.WriteLine(grid.Full());
-                Console.WriteLine(grid.Verification());
-                Console.WriteLine();
-                Console.Write("Digite a célula para Inserir um número(L/C):");
-                string[] position = Console.ReadLine().Split(",");
-                int row = int.Parse(position[0]);
-                int column = int.Parse(position[1]);
-
-                foreach (Cell cell in grid.Box)
-                {
-                    if (cell.Position == $"{row},{column}")
-                    {
-                        if (cell.Fixed == true)
+                        if (player.Position[0] == i & player.Position[1] == k)
                         {
-                            Console.WriteLine("O número desta posição não pode ser editado!");
-                            Console.ReadLine();
+                            currentRow = grid.Box[count].Position[0].ToString();
+                            currentColumn = grid.Box[count].Position[2].ToString();
+                            currentBox = grid.Box[count].BoxNumber.ToString();
+                            if (movement == false)
+                            {
+                                if (grid.Box[count].Fixed == true)
+                                {   
+                                }
+                                else
+                                {
+                                    grid.Box[count].Number = player.Number;
+                                }
+                            }
+                            movement = true;
+                            Console.BackgroundColor = ConsoleColor.Blue;
+                            Console.Write(grid.Box[count].Number + " ");
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            count++;
                         }
                         else
                         {
-                            Console.Write("Número:");
-                            cell.Number = Console.ReadLine();
+                            if (grid.Box[count].Fixed == true)
+                            {
+                                Console.ForegroundColor = ConsoleColor.DarkGray;
+                                Console.Write(grid.Box[count].Number + " ");
+                                Console.ForegroundColor = ConsoleColor.White;
+                                count++;
+                            }
+                            else
+                            {
+                                Console.Write(grid.Box[count].Number + " ");
+                                count++;
+                            }
                         }
                     }
+                }
+                if (grid.Row(int.Parse(currentRow)) == false)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine($"A linha {currentRow} possui mais de um número {player.Number}!!");
+                }
+                if (grid.Column(int.Parse(currentColumn)) == false)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine($"A Coluna {currentColumn} possui mais de um número {player.Number}!!");
+                }
+                if (grid._Box(int.Parse(currentBox)) == false)
+                {
+                    Console.WriteLine();
+                    Console.WriteLine($"A Caixa {currentBox} possui mais de um número {player.Number}!!");
+                }
+                ConsoleKey pressedKey = Console.ReadKey().Key;
+                if (player.Action(pressedKey) == true)
+                {
+                    movement = false;
                 }
             }
         }
