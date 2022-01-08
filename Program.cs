@@ -9,121 +9,53 @@ namespace SudokuSolver
     {
         static void Main(string[] args)
         {
-            string numbers = System.IO.File.ReadAllText(@"C:\Users\gucru\source\repos\SudokuSolver\Sudoku1\Sudoku1.txt");
+            string[] games = System.IO.File.ReadAllLines(@"C:\Users\gucru\source\repos\SudokuSolver\Sudoku1\Sudoku1.txt");
+            Random rnd1 = new Random();
+            string numbers = games[rnd1.Next(games.Length)];
             Grid grid = new Grid(numbers.ToString());
-            Console.WriteLine(grid.Pattern);
-            grid.fill();
-            int count = 0;
-            for (int i = 0; i < 11; i++)
+            grid.Fill();
+            while (true)
             {
-                Console.WriteLine();
-                for (int k = 0; k < 11; k++)
+                Console.Clear();
+                int count = 0;
+                for (int i = 0; i < 11; i++)
                 {
-                    Console.Write(grid.Box[count].Position + " ");
-                    count++;
-                }
-            }
-            count = 0;
-            for (int i = 0; i < 11; i++)
-            {
-                Console.WriteLine();
-                for (int k = 0; k < 11; k++)
-                {
-                    Console.Write(grid.Box[count].Number + " ");
-                    count++;
-                }
-            }
-            /*
-            string[,] board = new string[11, 11];
-            count = 0;
-            for (int i = 0; i < 11; i++)
-            {
-                for (int k = 0; k < 11; k++)
-                {
-                    if (i == 3 | i == 7)
+                    Console.WriteLine();
+                    for (int k = 0; k < 11; k++)
                     {
-                        board[i, k] = "-";
+                        Console.Write(grid.Box[count].Number + " ");
+                        count++;
                     }
-                    else if (k == 3 | k == 7)
+                }
+                Console.WriteLine();
+                Console.WriteLine(grid.Row());
+                Console.WriteLine(grid.Column());
+                Console.WriteLine(grid._Box());
+                Console.WriteLine(grid.Full());
+                Console.WriteLine(grid.Verification());
+                Console.WriteLine();
+                Console.Write("Digite a célula para Inserir um número(L/C):");
+                string[] position = Console.ReadLine().Split(",");
+                int row = int.Parse(position[0]);
+                int column = int.Parse(position[1]);
+
+                foreach (Cell cell in grid.Box)
+                {
+                    if (cell.Position == $"{row},{column}")
                     {
-                        board[i, k] = "|";
-                    }
-                    else
-                    {
-                        if (numbers[count].ToString() == "0")
+                        if (cell.Fixed == true)
                         {
-                            board[i, k] = " ";
-                            count++;
+                            Console.WriteLine("O número desta posição não pode ser editado!");
+                            Console.ReadLine();
                         }
                         else
                         {
-                            board[i, k] = numbers[count].ToString();
-                            count++;
+                            Console.Write("Número:");
+                            cell.Number = Console.ReadLine();
                         }
                     }
                 }
             }
-            
-            while (true)
-            {
-                try
-                {
-                    Console.Clear();
-                    for (int i = 0; i < 11; i++)
-                    {
-                        Console.WriteLine();
-                        for (int k = 0; k < 11; k++)
-                        {
-                            Console.Write(board[i, k] + " ");
-                        }
-                    }
-                    Console.WriteLine();
-                    Console.WriteLine("Digite a célula para Inserir um número(L/C):");
-                    string[] position = (Console.ReadLine().Split(","));
-                    int row = int.Parse(position[0]);
-                    int column = int.Parse(position[1]);
-                    if (column <= 3 & row <= 3)
-                    {
-                        row--;
-                        column--;
-                    }
-                    else if (column > 3 & column < 7 & row <= 3)
-                    {
-                        row--;
-                    }
-                    else if (column >= 7 & row <= 3)
-                    {
-                        row--;
-                        column++;
-                    }
-                    else if (column <= 3 & row > 3 & row < 7)
-                    {
-                        column--;
-                    }
-                    else if (column >= 7 & row > 3 & row < 7)
-                    {
-                        column++;
-                    }
-                    else if (column <= 3 & row >= 7)
-                    {
-                        column--;
-                        row++;
-                    }
-                    else if (column > 3 & column < 7 & row >= 7)
-                    {
-                        row++;
-                    }
-                    else if (column >= 7 & row >= 7)
-                    {
-                        column++;
-                        row++;
-                    }
-                    Console.WriteLine("Número:");
-                    board[row, column] = Console.ReadLine();
-                }
-                catch { }
-            }*/
-
         }
     }
 }
